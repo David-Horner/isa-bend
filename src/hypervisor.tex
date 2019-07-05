@@ -64,18 +64,24 @@ possible operating modes of a RISC-V hart with the hypervisor extension.
 
 \begin{table*}[h!]
 \begin{center}
-\begin{tabular}{|c|c||l|l|l|}
+\begin{tabular}{|c|c|c||l|l|l|}
   \hline
-   Virtualization & Privilege & \multirow{2}{*}{Abbreviation} & \multirow{2}{*}{Name} & Two-Level \\
-   Mode (V)       & Encoding  &                               &                       & Translation \\ \hline
-   0              & 0         & U-mode  & User mode & Off \\
-   0              & 1         & HS-mode & Hypervisor-extended supervisor mode & Off \\
-   0              & 3         & M-mode  & Machine mode & Off \\
+  misa[7]& Virtualization & Privilege & \multirow{2}{*}{Abbreviation} & \multirow{2}{*}{Name} & Two-Level \\
+    (H) & Mode (V)       & Encoding  &                               &                       & Translation \\ \hline
+  0 or 1 &   0*   & 0         & U-mode  & User mode & Off \\
+\hline
+  0 &  0*              & 1         & S-mode & Supervisor mode & Off \\
+  0 &  0*              & 3         & M-mode  & Machine mode & Off \\
   \hline
-   1              & 0         & VU-mode & Virtual user mode & On \\
-   1              & 1         & VS-mode & Virtual supervisor mode & On \\
+  1 &  0              & 1         & HS-mode & Hypervisor-extended supervisor  & Off \\
+  1 &  0              & 3         & M-mode  & Hypervisor-extended Machine  & Off \\
+  \hline
+  1 &  1              & 0         & VU-mode & Virtual user mode & On \\
+ 1 &   1              & 1         & VS-mode & Virtual supervisor mode & On \\
   \hline
  \end{tabular}
+*
+Note: Virtualization Mode defaults to 0 when H = 0.
 \end{center}
 \caption{Operating modes with the hypervisor extension.}
 \label{h-operating-modes}
@@ -193,10 +199,10 @@ For any other trap into HS-mode, STL is set to 0.
 
 The SPRV bit modifies the privilege with which loads and stores execute when
 not in M-mode.
-When SPRV=0, translation and protection behave as normal.
-When SPRV=1, load and store memory addresses are translated and protected, and
-endianness is applied, as though the current virtualization mode were set to
-{\tt hstatus}.SPV and the current privilege mode were set to the HS-level SPP.
+When SPRV=0, translation and protection behave as normal.  When SPRV=1,
+load and store memory addresses are translated and protected as though
+the current virtualization mode were set to {\tt hstatus}.SPV and the current
+privilege mode were set to the HS-level SPP.
 Table~\ref{h-sprv} enumerates the cases.
 
 \begin{table*}[h!]
